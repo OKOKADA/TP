@@ -1,0 +1,12 @@
+# Comparaison des résultats des trois modèles
+models_results = {
+    "LSTM": {"accuracy": accuracy_lstm, "report": report_lstm},
+    "Random Forest": {"accuracy": accuracy_rf, "report": report_rf},
+    "XGBoost": {"accuracy": accuracy_xgb, "report": report_xgb}
+}
+
+# Afficher les résultats
+for model_name, results in models_results.items():
+    print(f"\nRésultats pour {model_name}:")
+    print(f"Accuracy: {results['accuracy']}")
+    print(results['report'])

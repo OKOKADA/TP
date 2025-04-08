@@ -1,0 +1,25 @@
+# Entrainement du modèle Random Forest
+
+from sklearn.ensemble import RandomForestClassifier
+
+rf_model = RandomForestClassifier(n_estimators=100, max_depth=10)
+
+X_train_flat = X_train_seq.reshape(X_train_seq.shape[0], -1)  # Aplatir les séquences
+X_test_flat = X_test_seq.reshape(X_test_seq.shape[0], -1)
+rf_model.fit(X_train_flat, Y_train_seq)
+rf_pred = rf_model.predict(X_test_flat)
+print("Random Forest Performance:")
+print(classification_report(Y_test_seq, rf_pred))
+
+
+# Entrainement du modèle xbg
+import xgboost as xgb
+
+xgb_model = xgb.XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.1, random_state=42)
+xgb_model.fit(X_train, Y_train)
+y_pred_xgb = xgb_model.predict(X_test)
+accuracy_xgb = accuracy_score(Y_test, y_pred_xgb)
+report_xgb = classification_report(Y_test, y_pred_xgb)
+print(f"XGBoost Accuracy: {accuracy_xgb}")
+print("XGBoost Report:")
+print(report_xgb)

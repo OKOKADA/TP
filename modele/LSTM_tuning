@@ -1,0 +1,34 @@
+# Tester différentes combinaisons d’hyperparamètres pour le modèle LSTM
+hyperparams = [
+    {'units': 50, 'dropout_rate': 0.2, 'optimizer': 'adam'},
+    {'units': 100, 'dropout_rate': 0.3, 'optimizer': 'rmsprop'},
+    {'units': 75, 'dropout_rate': 0.2, 'optimizer': 'sgd'}
+]
+
+
+# Compiler le modèle
+Losses, Accuracies = [], []
+ 
+for param in hyperparams:
+    print(f"\nTest avec {param}")
+    model = Sequential()
+    model.add(LSTM(units=50, return_sequences=True, input_shape=(seq_length, nombre_feature)))
+    model.add(Dropout(param['dropout_rate']))  # Ajouté pour éviter le surapprentissage
+    model.add(LSTM(units=param['units']))
+    model.add(Dropout(param['dropout_rate']))
+    model.add(Dense(units=1, activation='sigmoid')) 
+    model.compile(optimizer=param['optimizer'], loss='binary_crossentropy', metrics=['accuracy'])
+
+
+    model.fit(X_train_seq, 
+              Y_train_seq, epochs=20, 
+              batch_size=32, validation_data=(X_test_seq, Y_test_seq), 
+              verbose=1)
+    # Évaluation
+    loss, accuracy = model.evaluate(X_test_seq, Y_test_seq)
+    Losses.append(loss)
+    Accuracies.append(accuracy)
+    print(f"Loss: {loss}, Accuracy: {accuracy}")
+    # Prédictions pour métriques supplémentaires
+    y_pred = (model.predict(X_test_seq) > 0.5).astype(int)  # Si binaire
+    print(classification_report(Y_test_seq, y_pred))
